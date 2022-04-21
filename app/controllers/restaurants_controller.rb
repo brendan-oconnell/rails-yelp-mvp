@@ -4,10 +4,14 @@ class RestaurantsController < ApplicationController
   end
 
   def create
-    @restaurant = Restaurant.new(params)
-    @restaurant.save
+    @restaurant = Restaurant.new(restaurant_params)
+    if @restaurant.valid?
+      @restaurant.save
     # no need for app/views/restaurants/create.html.erb
-    redirect_to restaurants_path
+      redirect_to restaurant_path(@restaurant)
+    else
+      render :new
+    end
   end
 
   def new
@@ -22,5 +26,9 @@ class RestaurantsController < ApplicationController
 
   def get_restaurant
     @restaurant = Restaurant.find(params[:id])
+  end
+
+  def restaurant_params
+    params.require(:restaurant).permit(:name, :address, :phone_number, :category)
   end
 end
